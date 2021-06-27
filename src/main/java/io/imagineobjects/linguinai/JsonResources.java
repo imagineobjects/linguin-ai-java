@@ -1,10 +1,17 @@
 package io.imagineobjects.linguinai;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.json.JsonValue;
+import java.io.IOException;
+import java.io.StringReader;
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
@@ -170,5 +177,376 @@ interface JsonResources {
         final Supplier<Map<String, List<String>>> headers,
         final JsonValue body
     );
+
+    /**
+     * JSON Resources obtained by making HTTP calls, using
+     * the JDK.
+     * @author Mihai Andronache (amihaiemil@gmail.com)
+     * @version $Id$
+     * @since 0.0.8
+     */
+    final class JdkHttp implements JsonResources {
+
+        /**
+         * Access token.
+         */
+        private final AccessToken accessToken;
+
+        /**
+         * Instructs http client to use {@link HttpClient.Version#HTTP_1_1}.
+         * Use this flag if the integration test server doesn't support
+         * HTTP_2.
+         */
+        private final boolean useOldHttpProtocol;
+
+        /**
+         * Ctor.
+         */
+        JdkHttp() {
+            this(null, false);
+        }
+
+        /**
+         * Ctor.
+         * @param useOldHttpProtocol Instructs http client to use
+         * {@link HttpClient.Version#HTTP_1_1}. Use this flag if
+         * integration test server doesn't support HTTP_2.
+         */
+        JdkHttp(final boolean useOldHttpProtocol) {
+            this(null, useOldHttpProtocol);
+        }
+
+        /**
+         * Ctor.
+         * @param accessToken Access token for authenticated requests.
+         * @param useOldHttpProtocol Instructs http client to use
+         * {@link HttpClient.Version#HTTP_1_1}. Use this flag if
+         * integration test server doesn't support HTTP_2.
+         */
+        private JdkHttp(
+            final AccessToken accessToken,
+            final boolean useOldHttpProtocol
+        ) {
+            this.accessToken = accessToken;
+            this.useOldHttpProtocol= useOldHttpProtocol;
+        }
+
+        @Override
+        public JsonResources authenticated(final AccessToken accessToken) {
+            return new JsonResources.JdkHttp(
+                accessToken,
+                this.useOldHttpProtocol
+            );
+        }
+
+        @Override
+        public Resource get(
+            final URI uri,
+            final Supplier<Map<String, List<String>>> headers
+        ) {
+            try {
+                final HttpResponse<String> response = this.newHttpClient()
+                    .send(
+                        this.request(
+                            uri,
+                            "GET",
+                            headers.get(),
+                            HttpRequest.BodyPublishers.noBody()
+                        ),
+                        HttpResponse.BodyHandlers.ofString()
+                    );
+                return new JsonResponse(
+                    response.statusCode(),
+                    response.body(),
+                    this.headers(response.headers())
+                );
+            } catch (final IOException | InterruptedException ex) {
+                throw new IllegalStateException(
+                    "Couldn't GET [" + uri.toString() +"]",
+                    ex
+                );
+            }
+        }
+
+        @Override
+        public Resource post(
+            final URI uri,
+            final Supplier<Map<String, List<String>>> headers,
+            final JsonValue body
+        ) {
+            try {
+                final HttpResponse<String> response = this.newHttpClient()
+                    .send(
+                        this.request(
+                            uri,
+                            "POST",
+                            headers.get(),
+                            HttpRequest.BodyPublishers.ofString(
+                                body.toString()
+                            )
+                        ),
+                        HttpResponse.BodyHandlers.ofString()
+                    );
+                return new JsonResponse(
+                    response.statusCode(),
+                    response.body(),
+                    this.headers(response.headers())
+                );
+            } catch (final IOException | InterruptedException ex) {
+                throw new IllegalStateException(
+                    "Couldn't POST " + body.toString()
+                    + " to [" + uri.toString() +"]",
+                    ex
+                );
+            }
+        }
+
+        @Override
+        public Resource patch(
+            final URI uri,
+            final Supplier<Map<String, List<String>>> headers,
+            final JsonValue body
+        ) {
+            try {
+                final HttpResponse<String> response = this.newHttpClient()
+                    .send(
+                        this.request(
+                            uri,
+                            "PATCH",
+                            headers.get(),
+                            HttpRequest.BodyPublishers.ofString(
+                                body.toString()
+                            )
+                        ),
+                        HttpResponse.BodyHandlers.ofString()
+                    );
+                return new JsonResponse(
+                    response.statusCode(),
+                    response.body(),
+                    this.headers(response.headers())
+                );
+            } catch (final IOException | InterruptedException ex) {
+                throw new IllegalStateException(
+                    "Couldn't PATCH " + body.toString()
+                    + " at [" + uri.toString() +"]",
+                    ex
+                );
+            }
+        }
+
+        @Override
+        public Resource put(
+            final URI uri,
+            final Supplier<Map<String, List<String>>> headers,
+            final JsonValue body
+        ) {
+            try {
+                final HttpResponse<String> response = this.newHttpClient()
+                    .send(
+                        this.request(
+                            uri,
+                            "PUT",
+                            headers.get(),
+                            HttpRequest.BodyPublishers.ofString(
+                                body.toString()
+                            )
+                        ),
+                        HttpResponse.BodyHandlers.ofString()
+                    );
+                return new JsonResponse(
+                    response.statusCode(),
+                    response.body(),
+                    this.headers(response.headers())
+                );
+            } catch (final IOException | InterruptedException ex) {
+                throw new IllegalStateException(
+                    "Couldn't PUT " + body.toString()
+                    + " at [" + uri.toString() +"]",
+                    ex
+                );
+            }
+        }
+
+        @Override
+        public Resource delete(
+            final URI uri,
+            final Supplier<Map<String, List<String>>> headers,
+            final JsonValue body
+        ) {
+            try {
+                final HttpResponse<String> response = this.newHttpClient()
+                    .send(
+                        this.request(
+                            uri,
+                            "DELETE",
+                            headers.get(),
+                            HttpRequest.BodyPublishers.ofString(
+                                body.toString()
+                            )
+                        ),
+                        HttpResponse.BodyHandlers.ofString()
+                    );
+                return new JsonResponse(
+                    response.statusCode(),
+                    response.body(),
+                    this.headers(response.headers())
+                );
+            } catch (final IOException | InterruptedException ex) {
+                throw new IllegalStateException(
+                    "Couldn't DELETE " + body.toString()
+                        + " at [" + uri.toString() +"]",
+                    ex
+                );
+            }
+        }
+
+        /**
+         * Build and return the HTTP Request.
+         * @param uri URI.
+         * @param method Method.
+         * @param headers HTTP Headers.
+         * @param body Body.
+         * @return HttpRequest.
+         * @checkstyle LineLength (100 lines)
+         */
+        private HttpRequest request(
+            final URI uri,
+            final String method,
+            final Map<String, List<String>> headers,
+            final HttpRequest.BodyPublisher body
+        ) {
+            HttpRequest.Builder requestBuilder;
+            if(this.accessToken != null) {
+                requestBuilder = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .method(method, body)
+                    .header("Content-Type", "application/json")
+                    .header(
+                        this.accessToken.header(),
+                        this.accessToken.value()
+                    );
+            } else {
+                requestBuilder = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .method(method, body)
+                    .header("Content-Type", "application/json");
+            }
+            for(final Map.Entry<String, List<String>> header : headers.entrySet()) {
+                requestBuilder = requestBuilder.header(
+                    header.getKey(),
+                    String.join(",", header.getValue())
+                );
+            }
+            return requestBuilder.build();
+        }
+
+        /**
+         * Creates a new http client.
+         * @return HttpClient.
+         */
+        private HttpClient newHttpClient() {
+            final HttpClient client;
+            if (this.useOldHttpProtocol) {
+                client = HttpClient
+                    .newBuilder()
+                    .version(HttpClient.Version.HTTP_1_1)
+                    .build();
+            } else {
+                client = HttpClient.newHttpClient();
+            }
+            return client;
+        }
+
+        /**
+         * Calling HttpHeaders.map() will return a Map<String, List<String>>,
+         * BUT it will not split the header's value by comma. We have to do
+         * that manually.
+         * @param headers Headers map with values list split by comma.
+         * @return Map.
+         * @checkstyle LineLength (10 lines)
+         * @see <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpHeaders.html">HttpHeaders.map() JavaDoc.</a>
+         */
+        private Map<String, List<String>> headers(final HttpHeaders headers) {
+            final Map<String, List<String>> split = new HashMap<>();
+            final Map<String, List<String>> original = headers.map();
+            for(final Map.Entry<String, List<String>> header : original.entrySet()) {
+                final List<String> splitList = new ArrayList<>();
+                for(final String value : header.getValue()) {
+                    Arrays.asList(value.split(",")).stream().forEach(
+                        v -> splitList.add(v.trim())
+                    );
+                }
+                split.put(header.getKey(), splitList);
+            }
+            return split;
+        }
+    }
+
+    /**
+     * Response as JSON.
+     * @author Mihai Andronache (amihaiemil@gmail.com)
+     * @version $Id$
+     * @since 0.0.1
+     */
+    final class JsonResponse implements Resource {
+
+        /**
+         * Response status code.
+         */
+        final int statusCode;
+
+        /**
+         * Response body (expected to be a JSON).
+         */
+        final String body;
+
+        /**
+         * Response headers.
+         */
+        private final Map<String, List<String>> headers;
+
+        /**
+         * Ctor.
+         * @param statusCode Status code.
+         * @param body Response Body.
+         * @param headers Response Headers.
+         */
+        JsonResponse(final int statusCode,
+                     final String body,
+                     final Map<String, List<String>> headers) {
+            this.statusCode = statusCode;
+            this.body = body;
+            this.headers = headers;
+        }
+
+        @Override
+        public int statusCode() {
+            return this.statusCode;
+        }
+
+        @Override
+        public JsonObject asJsonObject() {
+            return Json.createReader(
+                new StringReader(this.body)
+            ).readObject();
+        }
+
+        @Override
+        public JsonArray asJsonArray() {
+            return Json.createReader(
+                new StringReader(this.body)
+            ).readArray();
+        }
+
+        @Override
+        public String body() {
+            return this.body;
+        }
+
+        @Override
+        public Map<String, List<String>> headers() {
+            return this.headers;
+        }
+    }
 
 }
