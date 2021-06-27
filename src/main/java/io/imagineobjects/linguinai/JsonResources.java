@@ -19,8 +19,6 @@ import java.util.function.Supplier;
  * @author Mihai Andronache (amihiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #4:60min Start implementing the Linguin API according to the docs.
- *  We should start with the entry point interface.
  */
 interface JsonResources {
 
