@@ -22,4 +22,33 @@ interface AccessToken {
      */
     String value();
 
+    /**
+     * Bearer access token.
+     */
+    class Bearer implements AccessToken {
+
+        /**
+         * Header value.
+         */
+        private final String value;
+
+        /**
+         * Ctor.
+         *
+         * @param value Header value.
+         */
+        Bearer(final String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String header() {
+            return "Authorization";
+        }
+
+        @Override
+        public String value() {
+            return "Bearer " + this.value;
+        }
+    }
 }
