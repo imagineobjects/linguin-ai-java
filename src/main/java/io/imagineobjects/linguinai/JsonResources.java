@@ -12,6 +12,8 @@ import java.util.function.Supplier;
  * @author Mihai Andronache (amihiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #1:60min Implement and test JdkHttp (implements JsonResources),
+ *  similarly to how it's done in self-xdsd/self-core.
  */
 interface JsonResources {
 
