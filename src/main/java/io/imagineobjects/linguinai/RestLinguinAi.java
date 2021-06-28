@@ -1,8 +1,16 @@
 package io.imagineobjects.linguinai;
 
+import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Linguin AI REST client entry point.
@@ -75,5 +83,56 @@ public final class RestLinguinAi implements LinguinAi {
                 return this.json.getInt("remaining_today");
             }
         };
+    }
+
+    @Override
+    public Languages detect(final String text) {
+        return this.detect(text, StandardCharsets.UTF_8.toString());
+    }
+
+    @Override
+    public Languages detect(final String text, final String encoding){
+        try {
+            final Resource resource = this.resources.post(
+                URI.create(
+                    this.baseUri + "/detect?q="
+                    + URLEncoder.encode(text, encoding)
+                ),
+                Json.createObjectBuilder().build()
+            );
+            if (resource.statusCode() != HttpURLConnection.HTTP_OK) {
+                throw new IllegalStateException(
+                    "Call to /detect returned status code "
+                    + resource.statusCode() + ", instead of 200 OK"
+                );
+            }
+            final List<Language> languages = new ArrayList<>();
+            final JsonArray results = resource.asJsonObject()
+                .getJsonArray("results");
+            for(final JsonValue lang : results) {
+                languages.add(
+                    new Language() {
+                        @Override
+                        public String code() {
+                            return ((JsonObject) lang).getString("lang");
+                        }
+
+                        @Override
+                        public double confidence() {
+                            return ((JsonObject) lang)
+                                .getJsonNumber("confidence")
+                                .doubleValue();
+                        }
+                    }
+                );
+            }
+            return new ListedLanguages(languages);
+        } catch (final UnsupportedEncodingException ex) {
+            throw new IllegalStateException(
+                "UnsupportedEncodingException when trying to detect language "
+                + "of text [" + text + "] with Charset [" + encoding + "].",
+                ex
+            );
+        }
     }
 }

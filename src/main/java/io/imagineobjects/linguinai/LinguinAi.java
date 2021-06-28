@@ -5,8 +5,8 @@ package io.imagineobjects.linguinai;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #6:60min Continue implementing the API, with the single detection
- *  endpoint, then bulk detection etc.
+ * @todo #8:60min Continue implementing the API, with the bulk detection
+ *  endpoint. Allow user to specify encoding for each text.
  */
 public interface LinguinAi {
 
@@ -17,5 +17,21 @@ public interface LinguinAi {
      *  similarly to how it's done in self-xdsd/self-core.
      */
     Status status();
+
+    /**
+     * Detect the possible languages of the given text.
+     * Default encoding is UTF-8.
+     * @param text Given text.
+     * @return Languages.
+     */
+    Languages detect(final String text);
+
+    /**
+     * Detect the possible languages of the given text.
+     * @param text Given text.
+     * @param encoding Encoding.
+     * @return Languages.
+     */
+    Languages detect(final String text, final String encoding);
 
 }
