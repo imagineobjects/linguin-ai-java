@@ -26,12 +26,4 @@ public interface LinguinAi {
      */
     Languages detect(final String text);
 
-    /**
-     * Detect the possible languages of the given text.
-     * @param text Given text.
-     * @param encoding Encoding.
-     * @return Languages.
-     */
-    Languages detect(final String text, final String encoding);
-
 }

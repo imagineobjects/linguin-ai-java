@@ -86,17 +86,12 @@ public final class RestLinguinAi implements LinguinAi {
     }
 
     @Override
-    public Languages detect(final String text) {
-        return this.detect(text, StandardCharsets.UTF_8.toString());
-    }
-
-    @Override
-    public Languages detect(final String text, final String encoding){
+    public Languages detect(final String text){
         try {
             final Resource resource = this.resources.post(
                 URI.create(
                     this.baseUri + "/detect?q="
-                    + URLEncoder.encode(text, encoding)
+                    + URLEncoder.encode(text, StandardCharsets.UTF_8.toString())
                 ),
                 Json.createObjectBuilder().build()
             );
@@ -130,7 +125,8 @@ public final class RestLinguinAi implements LinguinAi {
         } catch (final UnsupportedEncodingException ex) {
             throw new IllegalStateException(
                 "UnsupportedEncodingException when trying to detect language "
-                + "of text [" + text + "] with Charset [" + encoding + "].",
+                + "of text [" + text + "] with Charset ["
+                + StandardCharsets.UTF_8.toString() + "].",
                 ex
             );
         }
