@@ -11,7 +11,7 @@ Java 11 API Wrapper for https://linguin.ai
 
 ### Contributing 
 
-If you would like to contribute, just open an issue or a PR.
+If you would like to contribute, just open an Issue or a PR.
 
 Make sure the maven build:
 
