@@ -17,7 +17,7 @@
 
     <name>linguin-ai-java</name>
     <description>Java 11 API Wrapper For Linguin AI.</description>
-    <url>https://www.github.com/decorators-squad/eo-yaml</url>
+    <url>https://www.github.com/imagineobjects/linguin-ai-java</url>
     <licenses>
         <license>
             <name>The BSD 3-Clause Licence</name>
