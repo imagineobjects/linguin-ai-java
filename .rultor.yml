@@ -10,7 +10,7 @@ env:
   JAVA_HOME: /usr/lib/jvm/java-11-openjdk
 merge:
   script: |-
-    mvn clean install -Pcheckstyle
+    mvn clean install -Pcheckstyle,itcases -PtestCoverage jacoco:report coveralls:report
 deploy:
   script: |-
     echo 'Nothing to deploy'
