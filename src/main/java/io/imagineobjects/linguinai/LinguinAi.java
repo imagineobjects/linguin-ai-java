@@ -5,6 +5,7 @@ package io.imagineobjects.linguinai;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #15:60min Implement the GET SupportedLanguages endpoint.
  */
 public interface LinguinAi {
 
