@@ -1,15 +1,13 @@
 package io.imagineobjects.linguinai;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
+import javax.json.*;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,6 +15,8 @@ import java.util.List;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
+ * @todo #11:60min Finish the implementation of method bulkDetect. It should
+ *  return an instance of BulkDetection (extends Iterable of Languages).
  */
 public final class RestLinguinAi implements LinguinAi {
 
@@ -130,5 +130,44 @@ public final class RestLinguinAi implements LinguinAi {
                 ex
             );
         }
+    }
+
+    @Override
+    public List<Languages> bulkDetect(final String... texts) {
+        try {
+            final StringBuilder query = new StringBuilder();
+            for(int i=0; i < texts.length; i++) {
+                query.append("q[]=").append(
+                    URLEncoder.encode(
+                        texts[i],
+                        StandardCharsets.UTF_8.toString()
+                    )
+                );
+                if(i < texts.length -1) {
+                    query.append("&");
+                }
+            }
+            final Resource resource = this.resources.post(
+                URI.create(
+                    this.baseUri + "/bulk?" + query.toString()
+                ),
+                Json.createObjectBuilder().build()
+            );
+            if (resource.statusCode() != HttpURLConnection.HTTP_OK) {
+                throw new IllegalStateException(
+                    "Call to /bulk returned status code "
+                    + resource.statusCode() + ", instead of 200 OK"
+                );
+            }
+            System.out.println(resource.asJsonObject());
+        } catch (final UnsupportedEncodingException ex) {
+            throw new IllegalStateException(
+                "UnsupportedEncodingException when trying to detect language "
+                + "of texts " + Arrays.toString(texts) + " with Charset ["
+                + StandardCharsets.UTF_8.toString() + "].",
+                ex
+            );
+        }
+        throw new UnsupportedOperationException("Not yet finished.");
     }
 }
