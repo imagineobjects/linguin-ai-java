@@ -10,13 +10,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 /**
  * Linguin AI REST client entry point.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #11:60min Finish the implementation of method bulkDetect. It should
- *  return an instance of BulkDetection (extends Iterable of Languages).
  */
 public final class RestLinguinAi implements LinguinAi {
 
@@ -34,7 +33,7 @@ public final class RestLinguinAi implements LinguinAi {
      * Constructor. By default, the /v1 API base URI is being used.
      * @param token Access token.
      */
-    private RestLinguinAi(final String token) {
+    public RestLinguinAi(final String token) {
         this(URI.create("https://api.linguin.ai/v1"), token);
     }
 
@@ -43,7 +42,7 @@ public final class RestLinguinAi implements LinguinAi {
      * @param baseUri Base URI (e.g. https://api.linguin.ai/v1).
      * @param token Access token.
      */
-    public RestLinguinAi(final URI baseUri, final String token) {
+    private RestLinguinAi(final URI baseUri, final String token) {
         this.baseUri = baseUri;
         this.resources = new JsonResources.JdkHttp().authenticated(
             new AccessToken.Bearer(token)
@@ -118,6 +117,11 @@ public final class RestLinguinAi implements LinguinAi {
                                 .getJsonNumber("confidence")
                                 .doubleValue();
                         }
+
+                        @Override
+                        public String toString() {
+                            return this.code();
+                        }
                     }
                 );
             }
@@ -133,7 +137,7 @@ public final class RestLinguinAi implements LinguinAi {
     }
 
     @Override
-    public List<Languages> bulkDetect(final String... texts) {
+    public BulkDetection bulkDetect(final String... texts) {
         try {
             final StringBuilder query = new StringBuilder();
             for(int i=0; i < texts.length; i++) {
@@ -159,7 +163,37 @@ public final class RestLinguinAi implements LinguinAi {
                     + resource.statusCode() + ", instead of 200 OK"
                 );
             }
-            System.out.println(resource.asJsonObject());
+            final List<Languages> result = new ArrayList<>();
+            final JsonArray jsonResults = resource.asJsonObject()
+                .getJsonArray("results");
+            for(final JsonValue detected : jsonResults) {
+                List<Language> lang = new ArrayList<>();
+                for(final JsonValue language : (JsonArray) detected) {
+                    lang.add(
+                        new Language() {
+                            @Override
+                            public String code() {
+                                return ((JsonObject) language)
+                                    .getString("lang");
+                            }
+
+                            @Override
+                            public double confidence() {
+                                return ((JsonObject) language)
+                                    .getJsonNumber("confidence")
+                                    .doubleValue();
+                            }
+
+                            @Override
+                            public String toString() {
+                                return this.code();
+                            }
+                        }
+                    );
+                }
+                result.add(new ListedLanguages(lang));
+            }
+            return () -> result.iterator();
         } catch (final UnsupportedEncodingException ex) {
             throw new IllegalStateException(
                 "UnsupportedEncodingException when trying to detect language "
@@ -168,6 +202,5 @@ public final class RestLinguinAi implements LinguinAi {
                 ex
             );
         }
-        throw new UnsupportedOperationException("Not yet finished.");
     }
 }

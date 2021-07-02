@@ -1,7 +1,5 @@
 package io.imagineobjects.linguinai;
 
-import java.util.List;
-
 /**
  * Linguin AI in Java.
  * @author Mihai Andronache (amihaiemil@gmail.com)
@@ -29,7 +27,7 @@ public interface LinguinAi {
     /**
      * Detect the possible languages for more texts.
      * @param texts Texts to detect.
-     * @return List of Languages.
+     * @return BulkDetection.
      */
-    List<Languages> bulkDetect(final String... texts);
+    BulkDetection bulkDetect(final String... texts);
 }
