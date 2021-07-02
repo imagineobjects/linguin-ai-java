@@ -8,7 +8,6 @@ import java.util.List;
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #8:60min Finish implementing this class and write unit tests for it.
  */
 final class ListedLanguages implements Languages {
 
@@ -27,7 +26,13 @@ final class ListedLanguages implements Languages {
 
     @Override
     public Language bestMatch() {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        Language best = this.languages.get(0);
+        for(int i = 1; i < this.languages.size(); i++) {
+            if(this.languages.get(i).confidence() > best.confidence()) {
+                best = languages.get(i);
+            }
+        }
+        return best;
     }
 
     @Override
