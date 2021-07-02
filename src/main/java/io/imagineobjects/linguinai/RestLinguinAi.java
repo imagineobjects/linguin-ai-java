@@ -34,7 +34,7 @@ public final class RestLinguinAi implements LinguinAi {
      * Constructor. By default, the /v1 API base URI is being used.
      * @param token Access token.
      */
-    public RestLinguinAi(final String token) {
+    private RestLinguinAi(final String token) {
         this(URI.create("https://api.linguin.ai/v1"), token);
     }
 
