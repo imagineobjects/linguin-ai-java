@@ -1,12 +1,12 @@
 package io.imagineobjects.linguinai;
 
+import java.util.List;
+
 /**
  * Linguin AI in Java.
  * @author Mihai Andronache (amihaiemil@gmail.com)
  * @version $Id$
  * @since 0.0.1
- * @todo #8:60min Continue implementing the API, with the bulk detection
- *  endpoint. Allow user to specify encoding for each text.
  */
 public interface LinguinAi {
 
@@ -26,4 +26,10 @@ public interface LinguinAi {
      */
     Languages detect(final String text);
 
+    /**
+     * Detect the possible languages for more texts.
+     * @param texts Texts to detect.
+     * @return List of Languages.
+     */
+    List<Languages> bulkDetect(final String... texts);
 }
