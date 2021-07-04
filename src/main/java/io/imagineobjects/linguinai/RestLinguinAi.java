@@ -203,4 +203,42 @@ public final class RestLinguinAi implements LinguinAi {
             );
         }
     }
+
+    @Override
+    public SupportedLanguages languages() {
+        final Resource resource = this.resources.get(
+            URI.create(this.baseUri + "/languages")
+        );
+        if(resource.statusCode() != HttpURLConnection.HTTP_OK) {
+            throw new IllegalStateException(
+                "Call to /languages returned status code "
+                + resource.statusCode() + ", instead of 200 OK"
+            );
+        }
+        final List<SupportedLanguage> supported = new ArrayList<>();
+        final JsonObject json = resource.asJsonObject();
+        for(final String code : json.keySet()) {
+            supported.add(
+                new SupportedLanguage() {
+                    @Override
+                    public String code() {
+                        return code;
+                    }
+
+                    @Override
+                    public String[] englishNames() {
+                        return json.getJsonArray(code)
+                            .getString(0).split(";");
+                    }
+
+                    @Override
+                    public String[] nativeNames() {
+                        return json.getJsonArray(code)
+                            .getString(1).split(";");
+                    }
+                }
+            );
+        }
+        return () -> supported.iterator();
+    }
 }
