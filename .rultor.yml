@@ -6,6 +6,7 @@ assets:
   settings.xml: "amihaiemil/maven#settings.xml"
   pubring.gpg: "amihaiemil/maven#pubring.gpg"
   secring.gpg: "amihaiemil/maven#secring.gpg"
+  linguin-ai-token.txt: "amihaiemil/maven#linguin-ai-token.txt"
 env:
   JAVA_HOME: /usr/lib/jvm/java-11-openjdk
 merge:
