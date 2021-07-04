@@ -34,7 +34,7 @@ echo $NEXT_VERSION
 LINGUIN_TOKEN=$(cat /home/r/linguin-ai-token.txt)
 
 mvn versions:set -DnewVersion=${tag}
-mvn clean deploy -e -X -Pitcases,genDocs,signArtifactsGpg,releaseToMavenCentral -Dlinguin-api-token=${LINGUIN_TOKEN} --settings /home/r/settings.xml
+mvn clean deploy -e -X -PgenDocs,signArtifactsGpg,releaseToMavenCentral -Dlinguin-api-token=${LINGUIN_TOKEN} --settings /home/r/settings.xml
 mvn versions:set -DnewVersion=${NEXT_VERSION}
 
 sed -i "s/<version>.*<\/version>/<version>${tag}<\/version>/" README.md
