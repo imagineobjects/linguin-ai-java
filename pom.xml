@@ -275,7 +275,7 @@
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>oss.sonatype.org</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <nexusUrl>https://s01.oss.sonatype.org</nexusUrl>
                             <description>${project.version}</description>
                         </configuration>
                         <executions>
@@ -293,12 +293,12 @@
             </build>
             <distributionManagement>
                 <repository>
-                    <id>oss.sonatype.org</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                    <id>s01.oss.sonatype.org</id>
+                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
                 </repository>
                 <snapshotRepository>
-                    <id>oss.sonatype.org</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <id>s01.oss.sonatype.org</id>
+                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
                 </snapshotRepository>
             </distributionManagement>
         </profile>
