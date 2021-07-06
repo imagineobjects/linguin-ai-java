@@ -14,7 +14,7 @@ To get the latest release from Maven Central, simply add the following to your `
 <dependency>
     <groupId>io.imagineobjects.web</groupId>
     <artifactId>linguin-ai-java</artifactId>
-    <version>not-yet-released</version>
+    <version>0.0.1</version>
 </dependency>
 ```
 
@@ -23,7 +23,7 @@ or download the <a href="https://oss.sonatype.org/service/local/repositories/rel
 If you use Gradle, add this to your dependencies:
 
 ```gradle
-implementation group: 'io.imagineobjects.web', name: 'linguin-ai-java', version: 'not-yet-released'
+implementation group: 'io.imagineobjects.web', name: 'linguin-ai-java', version: '0.0.1'
 ```
 
 The releases are also available on [Github Packages](https://github.com/imagineobjects/linguin-ai-java/packages)!
