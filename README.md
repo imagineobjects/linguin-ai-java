@@ -1,8 +1,5 @@
 # linguin-ai-java
 Java 11 API Wrapper for https://linguin.ai
- 
-[![Build Status](https://travis-ci.com/imagineobjects/linguin-ai-java.svg?branch=master)](https://travis-ci.com/imagineobjects/linguin-ai-java)
-[![Coverage Status](https://coveralls.io/repos/github/imagineobjects/linguin-ai-java/badge.svg?branch=master)](https://coveralls.io/github/imagineobjects/linguin-ai-java?branch=master)
 
 [![Managed By Self XDSD](https://self-xdsd.com/b/mbself.svg)](https://self-xdsd.com/p/imagineobjects/linguin-ai-java?provider=github) 
 [![DevOps By Rultor.com](http://www.rultor.com/b/imagineobjects/linguin-ai-java)](http://www.rultor.com/p/imagineobjects/linguin-ai-java)
@@ -18,7 +15,7 @@ To get the latest release from Maven Central, simply add the following to your `
 </dependency>
 ```
 
-or download the <a href="https://oss.sonatype.org/service/local/repositories/releases/content/io/imagineobjects/web/linguin-ai-java/0.0.1/linguin-ai-java-0.0.1-jar-with-dependencies.jar">fat</a> jar.
+or download the <a href="https://s01.oss.sonatype.org/service/local/repositories/releases/content/io/imagineobjects/web/linguin-ai-java/0.0.1/linguin-ai-java-0.0.1-jar-with-dependencies.jar">fat</a> jar.
 
 If you use Gradle, add this to your dependencies:
 
